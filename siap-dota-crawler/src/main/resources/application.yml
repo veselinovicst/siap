@@ -1,0 +1,7 @@
+mongodb:
+  databasename:
+    dota2-crawler
+  host: 
+    localhost
+  port:
+    27017
