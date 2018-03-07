@@ -71,7 +71,7 @@ public class MainService {
 		List<Match> matches = new ArrayList<>();
 		long startingId = 3765946065L;
 		String response = "";
-		for (int i = 0; i < 10; i++, startingId++) {
+		for (int i = 0; i < 100; i++, startingId++) {
 			try {
 				response = this.restTemplate.getForObject("https://api.opendota.com/api/matches/" + startingId,
 						String.class);
@@ -121,12 +121,12 @@ public class MainService {
 			}
 			System.out.println("MATCHES SIZE " + matches.size());
 		}
-		System.out.println("WRITING TO DB");
 		
 		List<Account> accounts = new ArrayList<>();
+		int matchNum = 1;
 		for (Match m : matches) {
 			for (Player p : m.getPlayers()) {
-				System.out.println("Match " + m.getMatchId() + " player " +  p.getAccountId());
+				System.out.println("match_num" + matchNum + " match_id " + m.getMatchId() + " player " +  p.getAccountId());
 				if(p.getAccountId() == null || p.getAccountId().equals("null")) continue;
 				response = this.restTemplate
 						.getForObject("https://api.opendota.com/api/players/" + p.getAccountId() + "/wl", String.class);
@@ -135,8 +135,17 @@ public class MainService {
 				a.setAccountId(p.getAccountId());
 				a.setLose(Integer.parseInt(obj.get("lose").toString()));
 				a.setWin(Integer.parseInt(obj.get("win").toString()));
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				try {
 				response = this.restTemplate.getForObject(
 						"https://api.opendota.com/api/players/" + p.getAccountId() + "/heroes", String.class);
+				}catch(Exception e) {
+					System.out.println("Exception for account while getting heroes: " + p.getAccountId());
+				}
 				JsonArray objs = new JsonParser().parse(response).getAsJsonArray();
 				List<HeroData> heroes = new ArrayList<>();
 				for (JsonElement o : objs) {
@@ -151,6 +160,8 @@ public class MainService {
 			}
 		}
 
+		System.out.println("WRITING TO DB");
+		
 		MongoDatabase database = mongoClient.getDatabase("dota2-crawler");
 		try {
 			database.createCollection("matches");
