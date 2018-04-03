@@ -12,8 +12,9 @@ public class SiapDotaCrawlerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SiapDotaCrawlerApplication.class, args);
 		MainService ms = new MainService();
-		ms.getMatch();
+		//ms.getMatch();
 		//ms.getMatch();
 		//ms.getHeroes();
+		ms.updatePlayers();
 	}
 }
