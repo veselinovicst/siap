@@ -1,5 +1,7 @@
 package dota_2_crawler;
 
+import java.io.FileNotFoundException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,6 +17,17 @@ public class SiapDotaCrawlerApplication {
 		//ms.getMatch();
 		//ms.getMatch();
 		//ms.getHeroes();
-		ms.updatePlayers();
+		//ms.updatePlayers();
+		
+		/*try {
+			ms.createCsvFile();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}*/
+		try {
+			ms.createCsvFileTypeTwo();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 }
