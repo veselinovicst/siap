@@ -1,0 +1,120 @@
+import numpy as np
+import pandas as pd
+
+import urllib
+
+import csv
+
+import sklearn
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
+
+from sklearn.cross_validation import train_test_split
+
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
+from sklearn import svm
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+
+
+-------------------------------------------------------- NAIVE BAYES (Gaussian, Bernoulli, Multinomial)-----------------------------------------------------------
+
+data = pd.read_csv("D:\oxygen_workspace\siap_project\siap-dota-crawler\csvs\matchesLimited.csv")
+
+dataset = np.loadtxt(data, delimiter=',')
+
+
+x = data.values[:,0:6]
+y = data.values[:,-1]
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = .33, random_state = 17)
+
+
+
+
+BernNB = BernoulliNB(binarize=True)
+BernNB.fit(x_train, y_train)
+
+print (BernNB)
+
+y_expect = y_test
+y_pred = BernNB.predict(x_test)
+
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
+
+
+GausNB = GaussianNB()
+GausNB.fit(x_train, y_train)
+
+print (GausNB)
+
+y_expect = y_test
+y_pred = GausNB.predict(x_test)
+
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
+
+MultiNB = MultinomialNB(alpha=1, fit_prior=True, class_prior=None)
+MultiNB.fit(x_train, y_train)
+
+print (MultiNB)
+y_expect = y_test
+y_pred = MultiNB.predict(x_test)
+
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
+
+print('Accuracy on the training subset: {:.3f}'.format(MultiNB.score(x_train, y_train)))
+print('Accuracy on the test subset: {:.3f}'.format(MultiNB.score(x_test, y_test))) 
+
+
+-------------------------------------------------------- SVM -----------------------------------------------------------
+
+
+clf = svm.SVC(kernel='linear', C = 0.8, degree=4,  gamma='auto', coef0=1.0)
+clf.fit(x_train,y_train)
+y_expect = y_test
+y_pred = clf.predict(x_test)
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
+
+print('Accuracy on the training subset: {:.3f}'.format(clf.score(x_train, y_train)))
+print('Accuracy on the test subset: {:.3f}'.format(clf.score(x_test, y_test))) 
+
+-------------------------------------------------------- LOGISTIC REGRESSION -----------------------------------------------------------
+
+log_reg = LogisticRegression()
+log_reg.fit(x_train,y_train)
+y_expect = y_test
+y_pred = clf.predict(x_test)
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
+
+print('Accuracy on the training subset: {:.3f}'.format(log_reg.score(x_train, y_train)))
+print('Accuracy on the test subset: {:.3f}'.format(log_reg.score(x_test, y_test))) 
+
+
+-------------------------------------------------------- RANDOM FOREST CLASSIFIER -----------------------------------------------------------
+
+randomForr = RandomForestClassifier(max_depth=3, random_state=0,criterion='gini', min_samples_split=6, min_samples_leaf=2, min_impurity_decrease=0.01)
+randomForr.fit(x_train, y_train)
+
+y_expect = y_test
+y_pred = randomForr.predict(x_test)
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
+
+-------------------------------------------------------- GRADIENT BOOSTING CLASSIFIER -----------------------------------------------------------
+
+gbc = GradientBoostingClassifier(max_depth=2, random_state=0, loss='deviance', learning_rate=0.01, n_estimators=110, subsample=0.8, criterion='friedman_mse')
+gbc.fit(x_train, y_train)
+
+y_expect = y_test
+y_pred = gbc.predict(x_test)
+print accuracy_score(y_expect, y_pred)
+print f1_score(y_expect, y_pred)
